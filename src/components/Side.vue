@@ -1,45 +1,53 @@
 <template>
-	<div class="left_container">
-		<div class="logo">
-			<i class="iconfont icon-github"></i>
-		</div>
-		<button id="minimize" @click="router.push('/')" :class="{active:onRoutes==='/'}">
-			<i class="iconfont icon-jiekou"></i>
-			<span>串口</span>
-		</button>
-		<button id="minimize" @click="router.push('/net')" :class="{active:onRoutes==='/net'}">
-			<i class="iconfont icon-wangluo"></i>
-			<span>网络</span>
-		</button>
-	</div>
+  <div class="left_container">
+    <div class="logo">
+      <img src="@/assets/logo.png" alt="logo">
+    </div>
+    <button id="minimize" @click="router.push('/')" :class="{active:onRoutes==='/'}">
+      <i class="iconfont icon-jiekou"></i>
+      <span>串口</span>
+    </button>
+    <button id="minimize" @click="router.push('/bluetooth')" :class="{active:onRoutes==='/bluetooth'}">
+      <i class="fa fa-bluetooth-b lh-28"></i>
+      <span>蓝牙</span>
+    </button>
+    <button id="minimize" @click="router.push('/net')" :class="{active:onRoutes==='/net'}">
+      <i class="iconfont icon-wangluo"></i>
+      <span>网络</span>
+    </button>
+  </div>
 </template>
 <script setup>
 import { computed } from 'vue';
-import { useRoute,useRouter  } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 const route = useRoute();
 const router = useRouter()
 const onRoutes = computed(() => {
-	return route.path;
+  return route.path;
 });
 </script>
 
 <style  scoped>
-.left_container{
+.left_container {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	padding-top: 30px;
 	width: 82px;
-	height:100vh;
-	background: #F3F5F6;
+	height: 100vh;
+	/* background: #f3f5f6; */
 	user-select: none;
 }
-.left_container .logo{
+.left_container .logo {
 	padding-bottom: 25px;
-	color: #FF936B;
+	color: #ff936b;
 }
-.left_container .logo i{
-	font-size: 32px;
+.left_container .logo img {
+	width: 40px;
+	height: 40px;
+}
+.lh-28{
+  line-height: 28px;
 }
 .left_container button {
 	display: flex;
@@ -53,17 +61,19 @@ const onRoutes = computed(() => {
 	border: 0;
 	border-radius: 7px;
 	outline: none;
-	font-size: 14px;
+	font-size: 16px;
+  font-weight: 600;
 	cursor: pointer;
 }
-.left_container button i{
+.left_container button i {
 	font-size: 18px;
 }
-.left_container button:hover{
-	background: #FAFAFA !important;
+.left_container button:hover {
+	background: #fafafa !important;
 }
-.active{
-	color: #8C78E6 !important;
+.active {
+	color: #00dac6 !important;
+  background: #fafafa !important;
 }
 </style>
 

@@ -1,7 +1,7 @@
 <template>
 	<div class="desktop-app-title-bar">
 		<div class="desktop-app-title-bar-left">
-			<!-- <i class="iconfont icon-github"></i> -->
+      永赛智能蓝牙调试工具
 		</div>
 		<div class="desktop-app-title-bar-right">
 			<button id="minimize" @click="onMinimize">
@@ -54,12 +54,14 @@ i {
 	align-items: center;
 	width: 100%;
 	padding-right: 5px;
-	background: #FAFAFA;
+	/* background: #FAFAFA; */
 	height: 38px;
 	-webkit-app-region: drag;
 	border-bottom: 1px solid #E8EBF0;
 }
-
+.desktop-app-title-bar-left{
+  margin-left:12px;
+}
 .icon-github {
 	background: #FAFAFA;
 	border-radius: 50%;
