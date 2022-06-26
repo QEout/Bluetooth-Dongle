@@ -1,7 +1,6 @@
 <template>
 	<div class="desktop-app-title-bar">
 		<div class="desktop-app-title-bar-left">
-      永赛智能蓝牙调试工具
 		</div>
 		<div class="desktop-app-title-bar-right">
 			<button id="minimize" @click="onMinimize">
@@ -53,11 +52,11 @@ i {
 	justify-content: space-between;
 	align-items: center;
 	width: 100%;
-	padding-right: 5px;
+	padding-right: 10px;
 	/* background: #FAFAFA; */
 	height: 38px;
 	-webkit-app-region: drag;
-	border-bottom: 1px solid #E8EBF0;
+	/* border-bottom: 1px solid #E8EBF0; */
 }
 .desktop-app-title-bar-left{
   margin-left:12px;
@@ -73,6 +72,7 @@ i {
 	justify-content: center;
 	align-items: center;
 	width: 26px;
+  margin-left: 4px;
 	height: 26px;
 	background: #FAFAFA;
 	border-radius: 4px;

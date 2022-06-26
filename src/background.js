@@ -11,10 +11,10 @@ let win;
 async function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
-    width: 900,
-    height: 580,
-    minWidth: 900,
-    minHeight: 580,
+    width: 925,
+    height: 615,
+    minWidth: 925,
+    minHeight: 615,
     useContentSize: false,
     frame: false,
     show: false,
