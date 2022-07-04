@@ -1,21 +1,21 @@
 <template>
-	<div class="left_container">
-		<div class="logo">
-			<img src="@/assets/logo.png" alt="logo" />
-		</div>
-		<button id="minimize" @click="router.push('/')" :class="{ active: onRoutes === '/' }">
-			<i class="iconfont icon-jiekou"></i>
-			<span>串口</span>
-		</button>
-		<button id="minimize" @click="router.push('/bluetooth')" :class="{ active: onRoutes === '/bluetooth' }">
-			<i class="fa fa-bluetooth-b lh-28"></i>
-			<span>蓝牙</span>
-		</button>
-		<button id="minimize" @click="router.push('/net')" :class="{ active: onRoutes === '/net' }">
-			<i class="iconfont icon-wangluo"></i>
-			<span>网络</span>
-		</button>
-	</div>
+  <div class="left_container">
+    <div class="logo">
+      <img src="@/assets/logo.png" alt="logo" @Click="logout" />
+    </div>
+    <button id="minimize" @click="router.push('/')" :class="{ active: onRoutes === '/' }">
+      <i class="iconfont icon-jiekou"></i>
+      <span>串口</span>
+    </button>
+    <button id="minimize" @click="router.push('/bluetooth')" :class="{ active: onRoutes === '/bluetooth' }">
+      <i class="fa fa-bluetooth-b lh-28"></i>
+      <span>蓝牙</span>
+    </button>
+    <button id="minimize" @click="router.push('/net')" :class="{ active: onRoutes === '/net' }">
+      <i class="iconfont icon-wangluo"></i>
+      <span>网络</span>
+    </button>
+  </div>
 </template>
 <script setup>
 import { computed } from 'vue';
@@ -23,8 +23,18 @@ import { useRoute, useRouter } from 'vue-router';
 const route = useRoute();
 const router = useRouter();
 const onRoutes = computed(() => {
-	return route.path;
+  return route.path;
 });
+const logout = () => {
+  let current = Bmob.User.current()
+  const query = Bmob.Query('_User');
+  query.set('id', current.objectId)
+  query.set('isLogin', false);
+  query.save().then(res => {
+    localStorage.removeItem('token');
+    router.push('/login');
+  })
+};
 </script>
 
 <style scoped>
@@ -34,7 +44,6 @@ const onRoutes = computed(() => {
 	align-items: center;
 	padding-top: 30px;
 	width: 82px;
-	height: 100vh;
 	/* background: #f3f5f6; */
 	user-select: none;
 }

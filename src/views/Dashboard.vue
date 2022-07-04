@@ -247,12 +247,12 @@ watch(
 	}
 );
 </script>
-<style>
+<style scoped>
 .com_container {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	padding-bottom: 4vh;
+	padding-bottom: 20px;
 }
 .home_c {
 	display: flex;

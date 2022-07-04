@@ -1,36 +1,36 @@
 <template>
-	<div class="desktop-app-title-bar">
-		<div class="desktop-app-title-bar-left">
-		</div>
-		<div class="desktop-app-title-bar-right">
-			<button id="minimize" @click="onMinimize">
-				<i class="iconfont icon-zuixiaohua"></i>
-			</button>
-			<button id="maximize" @click="onMaximize">
-				<i class="iconfont icon-window-maximize"></i>
-			</button>
-			<button id="close" @click="onClose">
-				<i class="iconfont icon-Close"></i>
-			</button>
-		</div>
-	</div>
+  <div class="desktop-app-title-bar">
+    <div class="desktop-app-title-bar-left">
+    </div>
+    <div class="desktop-app-title-bar-right">
+      <button id="minimize" @click="onMinimize">
+        <i class="iconfont icon-zuixiaohua"></i>
+      </button>
+      <button id="maximize" @click="onMaximize">
+        <i class="iconfont icon-window-maximize"></i>
+      </button>
+      <button id="close" @click="onClose">
+        <i class="iconfont icon-Close"></i>
+      </button>
+    </div>
+  </div>
 </template>
 <script setup>
 import { ipcRenderer } from 'electron';
 
 // 关闭
 const onClose = () => {
-	ipcRenderer.send('window-close');
+  ipcRenderer.send('window-close');
 };
 
 // 最小化
 const onMinimize = () => {
-	ipcRenderer.send('window-min');
+  ipcRenderer.send('window-min');
 };
 
 // 最大化
 const onMaximize = () => {
-	ipcRenderer.send('window-max');
+  ipcRenderer.send('window-max');
 };
 </script>
 <style>
@@ -53,16 +53,17 @@ i {
 	align-items: center;
 	width: 100%;
 	padding-right: 10px;
+  padding-top:5px;
 	/* background: #FAFAFA; */
 	height: 38px;
 	-webkit-app-region: drag;
 	/* border-bottom: 1px solid #E8EBF0; */
 }
-.desktop-app-title-bar-left{
-  margin-left:12px;
+.desktop-app-title-bar-left {
+	margin-left: 12px;
 }
 .icon-github {
-	background: #FAFAFA;
+	background: #fafafa;
 	border-radius: 50%;
 	margin: 0 10px;
 }
@@ -72,9 +73,9 @@ i {
 	justify-content: center;
 	align-items: center;
 	width: 26px;
-  margin-left: 4px;
+	margin-left: 4px;
 	height: 26px;
-	background: #FAFAFA;
+	background: #fafafa;
 	border-radius: 4px;
 	border: 0;
 	outline: none;
@@ -82,18 +83,18 @@ i {
 
 .desktop-app-title-bar-right button .iconfont {
 	font-size: 10px;
-	color: #5C5C5D;
+	color: #5c5c5d;
 }
 #close:hover {
-	background: #E81123;
+	background: #e81123;
 }
-#close:hover i{
-color: white;
+#close:hover i {
+	color: white;
 }
 
 #maximize:hover,
 #minimize:hover {
-	background: #E6E7E7;
+	background: #e6e7e7;
 	color: black;
 }
 </style>

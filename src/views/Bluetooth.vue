@@ -3,6 +3,9 @@
     <!-- <Header /> -->
     <div class="home_c">
       <div class="home_left shadow-card">
+        <div style="padding:0 10px">
+          <a-input-search v-model:value="value" placeholder="请输入表地址" enter-button="连接" style="width: 100%" @search="onSearch" />
+        </div>
         <div>
           <a-button class="full-btn">
             <span>复位转换器</span>
@@ -12,98 +15,37 @@
           <a-button class="full-btn">
             <span>蓝牙检定预处理</span>
           </a-button>
-          <!-- <span>蓝牙检定预处理</span>
-          <a-select class="home_input" style="width: 120px" :disabled="open" :defaultValue="1" @change="handleChangeStopBits">
-            <a-select-option v-for="item in serialConfig.stopBits" :key="item" :value="item">{{ item }}bit</a-select-option>
-          </a-select> -->
         </div>
         <div>
           <a-button class="full-btn">
             <span>查询蓝牙检定预处理状态</span>
           </a-button>
-          <!-- <span>查询蓝牙检定预处理状态</span>
-          <a-select class="home_input" style="width: 120px" :disabled="open" :defaultValue="1" @change="handleChangeStopBits">
-            <a-select-option v-for="item in serialConfig.stopBits" :key="item" :value="item">{{ item }}bit</a-select-option>
-          </a-select> -->
         </div>
-        <!-- <div>
-          <span>开/关</span>
-          <a-switch :checked="open" @change="handleSwitch" />
-        </div> -->
 
         <div>
           <a-divider>选择操作</a-divider>
+
           <div class="home_send">
             <a-textarea class="home_send_input" placeholder="请输入要发送的信息" @change="handleSendValue" allowClear autoSize />
-            <!-- <div class="home_btn">
-              <a-button type="primary" class="size-btn" :disabled="!open" @click="handleSendMsg">发送</a-button>
-              <a-button type="primary" class="size-btn" danger @click="clearMsg">清空</a-button>
-            </div> -->
           </div>
-          <!-- <div class="home_sendConfig">
-            <div class="home_check" style="margin-bottom: 12px;">
-              <a-checkbox @change="handleHexSend">十六进制发送</a-checkbox>
-            </div>
-            <div class="home_check">
-              <a-checkbox @change="openInterval">定时发送</a-checkbox>
-              <a-input-number :disabled="isInterval" v-model="time" :defaultValue="time" :min="1" :max="99999" @change="handleSetInterval" />
-            </div>
-          </div> -->
-          <div>
+
+          <div class="toped flex-selector">
             <span>重试次数</span>
             <a-select class="home_input" style="width: 120px" :disabled="open" :defaultValue="1" @change="handleChangeStopBits">
               <a-select-option v-for="item in serialConfig.stopBits" :key="item" :value="item">{{ item }}</a-select-option>
             </a-select>
           </div>
-          <a-button class="full-btn" @click="handleStart">
+          <a-button class="full-btn toped" @click="handleStart">
             一键发送
           </a-button>
-          <a-button class="full-btn" @click="handleStart">
+          <a-button class="full-btn toped" @click="handleStart">
             清空接收
           </a-button>
         </div>
       </div>
-      <div class="home_right">
-        <div class="home_text shadow-card" style="margin-bottom: 10px;">
-          <div>
-            <span>连接待测表</span>
-            <a-select class="home_input" style="width: 120px" :disabled="open" :defaultValue="9600" @change="handleChangeBaudRage">
-              <a-select-option v-for="item in serialConfig.baudRate" :key="item" :value="item">{{ item }}</a-select-option>
-            </a-select>
-          </div>
-          <div>
-            <span>切换待测表进检定模式</span>
-            <a-select class="home_input" style="width: 120px" :disabled="open" defaultValue="none" @change="handleChangeParity">
-              <a-select-option v-for="item in serialConfig.parity" :key="item" :value="item">{{ item }}</a-select-option>
-            </a-select>
-          </div>
 
-          <div>
-            <span>切换转换器检定模式</span>
-            <a-select class="home_input" style="width: 120px" :disabled="open" :defaultValue="8" @change="handleChangeDataBits">
-              <a-select-option v-for="item in serialConfig.dataBits" :key="item" :value="item">{{ item }}bit</a-select-option>
-            </a-select>
-          </div>
-          <div>
-            <span>设置转换器RS485波特率</span>
-            <a-select class="home_input" style="width: 120px" :disabled="open" :defaultValue="1" @change="handleChangeStopBits">
-              <a-select-option v-for="item in serialConfig.stopBits" :key="item" :value="item">{{ item }}bit</a-select-option>
-            </a-select>
-          </div>
-          <div>
-            <span>抄读管理单元固件版本号</span>
-            <a-select class="home_input" style="width: 120px" :disabled="open" :defaultValue="1" @change="handleChangeStopBits">
-              <a-select-option v-for="item in serialConfig.stopBits" :key="item" :value="item">{{ item }}bit</a-select-option>
-            </a-select>
-          </div>
-          <div>
-            <span>抄读蓝牙模块固件版本号</span>
-            <a-select class="home_input" style="width: 120px" :disabled="open" :defaultValue="1" @change="handleChangeStopBits">
-              <a-select-option v-for="item in serialConfig.stopBits" :key="item" :value="item">{{ item }}bit</a-select-option>
-            </a-select>
-          </div>
-        </div>
-        <div class="home_text shadow-card" ref="scrollRef">
+      <div class="home_right">
+        <div class="home_text shadow-card" ref="scrollRef" style="margin-bottom: 10px;">
           <div v-for="(item, index) in msg" :key="index" :class="item.chat === 'roboto' ? 'left_msg' : 'left_msg'">
             <!-- <a-avatar shape="square" size="small" :src="robots">
 							R
@@ -112,6 +54,93 @@
             <!-- {{ item.content }} -->
           </div>
         </div>
+        <div>
+          <a-row>
+            <a-col :span="12" class="home_text shadow-card">
+              <div class="home-item">
+                <a-button>切换待测表进检定模式</a-button>
+                <a-row>
+                  <a-row class="top-5">
+                    <span class="little-span">脉冲类型：</span>
+                    <a-select class="m-selector" size="small" v-model:value="value" placeholder="脉冲类型" :options="options"></a-select>
+                  </a-row>
+                  <a-row class="top-5">
+                    <span class="little-span">发射功率：</span>
+                    <a-select class="m-selector" size="small" v-model:value="value" placeholder="发射功率" :options="options"></a-select>
+                  </a-row>
+                  <a-row class="top-5">
+                    <span class="little-span">频段选择：</span>
+                    <a-select class="m-selector" size="small" v-model:value="value" placeholder="频段选择" :options="options"></a-select>
+                  </a-row>
+                  <a-row class="top-5">
+                    <span class="little-span">通道生成方式：</span>
+                    <a-select class="m-selector" size="small" v-model:value="value" placeholder="通道生成方式" :options="options"></a-select>
+                  </a-row>
+                  <a-row class="top-5">
+                    <span class="little-span">通道数量：</span>
+                    <a-select class="m-selector" size="small" v-model:value="value" placeholder="通道数量" :options="options"></a-select>
+                  </a-row>
+                </a-row>
+                <a-row v-for="i in 5" :key="i">
+                  <div class="top-5">
+                    <a-input size="small" v-model:value="value" placeholder="频点" :prefix="'通道'+ i" />
+                  </div>
+                </a-row>
+              </div>
+            </a-col>
+
+            <a-col :span="12">
+              <a-row class="home_text shadow-card">
+                <div class="home-item">
+                  <a-button>切换转换器检定模式</a-button>
+                  <a-row>
+                    <a-row class="top-5">
+                      <span class="little-span">脉冲类型：</span>
+                      <a-select class="m-selector" size="small" v-model:value="value" placeholder="脉冲类型" :options="options"></a-select>
+                    </a-row>
+                    <a-row class="top-5">
+                      <span class="little-span">发射功率：</span>
+                      <a-select class="m-selector" size="small" v-model:value="value" placeholder="发射功率" :options="options"></a-select>
+                    </a-row>
+                    <a-row class="top-5">
+                      <span class="little-span">通信模式：</span>
+                      <a-select class="m-selector" size="small" v-model:value="value" placeholder="通信模式" :options="options"></a-select>
+                    </a-row>
+                  </a-row>
+                </div>
+              </a-row>
+              <a-row style="flex-direction:column;margin-right:10px;">
+                <a-row class="top-5 home_text shadow-card" style="padding:10px">
+                  <span>设置转换器RS485波特率：</span>
+                  <a-select style="flex:1" size="small" :disabled="open" :defaultValue="1" @change="handleChangeStopBits">
+                    <a-select-option v-for="item in serialConfig.stopBits" :key="item" :value="item">{{ item }}bit</a-select-option>
+                  </a-select>
+
+                </a-row>
+                <a-row class="top-5 home_text shadow-card" style="flex-direction:column;padding:10px;">
+                  <span>版本：</span>
+                  <a-button>抄读管理单元固件版本号</a-button>
+                </a-row>
+                <a-row class="top-5 home_text shadow-card" style="flex-direction:column;padding:10px;">
+                  <span>版本：</span>
+                  <a-button>抄读蓝牙模块固件版本号</a-button>
+                </a-row>
+              </a-row>
+
+              <!-- <div>
+                ----------------
+                <span>切换转换器检定模式</span>
+                <a-select class="home_input" style="width: 120px" :disabled="open" :defaultValue="8" @change="handleChangeDataBits">
+                  <a-select-option v-for="item in serialConfig.dataBits" :key="item" :value="item">{{ item }}bit</a-select-option>
+                </a-select>
+              </div> -->
+
+            </a-col>
+
+          </a-row>
+
+        </div>
+
       </div>
     </div>
 
@@ -286,7 +315,33 @@ watch(
   }
 );
 </script>
-<style scoped>
+<style lang="scss" scoped>
+.m-selector {
+	min-width: 130px;
+}
+.bottom .border-card {
+	border: 1px solid #e8e8e8;
+}
+.top-5 {
+	margin-top: 5px;
+	justify-content: space-between;
+	width: 100%;
+}
+.home-item {
+	padding: 10px;
+	padding-top: 0px;
+	display: flex;
+	flex-direction: column;
+}
+.flex-selector {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0 10px;
+}
+.toped {
+	margin-top: 20px !important;
+}
 .full-btn {
 	width: -webkit-fill-available;
 	margin: auto 10px;
@@ -295,7 +350,7 @@ watch(
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	padding-bottom: 4vh;
+	padding-bottom: 20px;
 }
 .home_c {
 	display: flex;
@@ -325,7 +380,7 @@ watch(
 }
 
 .home_left > div .home_input {
-	width: 150px !important;
+	width: 100px !important;
 }
 .home_left > div > .home_check {
 	margin-bottom: 10px;
@@ -348,7 +403,7 @@ watch(
 	overflow: scroll;
 }
 .home_send_input {
-	margin-right: 10px !important;
+	margin-right: 0px !important;
 	height: 100%;
 }
 .home_text {

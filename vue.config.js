@@ -1,5 +1,9 @@
 module.exports = {
   pluginOptions: {
+    'style-resources-loader': {
+      preProcessor: 'scss',
+      patterns: []
+    },
     electronBuilder: {
       nodeIntegration: true,
       externals: ['serialport'],
