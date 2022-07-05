@@ -7,17 +7,17 @@
           <a-input-search v-model:value="value" placeholder="请输入表地址" enter-button="连接" style="width: 100%" @search="onSearch" />
         </div>
         <div>
-          <a-button class="full-btn">
+          <a-button class="full-btn" @click="quickMsg('7E7E7E5A0600DA7EA5')">
             <span>复位转换器</span>
           </a-button>
         </div>
         <div>
-          <a-button class="full-btn">
+          <a-button class="full-btn" @click="quickMsg('7E7E7E5A0607E17EA5')">
             <span>蓝牙检定预处理</span>
           </a-button>
         </div>
         <div>
-          <a-button class="full-btn">
+          <a-button class="full-btn" @click="quickMsg('7E7E7E5A0608E27EA5')">
             <span>查询蓝牙检定预处理状态</span>
           </a-button>
         </div>
@@ -46,15 +46,18 @@
 
       <div class="home_right">
         <div class="home_text shadow-card" ref="scrollRef" style="margin-bottom: 10px;">
-          <div v-for="(item, index) in msg" :key="index" :class="item.chat === 'roboto' ? 'left_msg' : 'left_msg'">
-            <!-- <a-avatar shape="square" size="small" :src="robots">
-							R
-						</a-avatar> -->
-            <div class="msgContent">{{ item.chat === 'roboto' ? '收' : '发' }}→{{ item.content }}</div>
+          <div v-for="(item, index) in msg" :key="index" :class="item.chat === 'roboto' ? 'right_msg' : 'left_msg'">
+            <div v-if="item.chat=='roboto'" style="display:flex;align-items:center">
+              <a-avatar shape="square" :size="32">
+                R
+              </a-avatar>
+              <div class="msgContent">收→{{ formatMsg(item.content) }}</div>
+            </div>
+            <div v-else class="msgContent">{{ item.chat ?? '发' }}→{{ formatMsg(item.content) }}</div>
             <!-- {{ item.content }} -->
           </div>
         </div>
-        <div>
+        <div style="min-height: 354px;">
           <a-row>
             <a-col :span="12" class="home_text shadow-card">
               <div class="home-item">
@@ -119,11 +122,11 @@
                 </a-row>
                 <a-row class="top-5 home_text shadow-card" style="flex-direction:column;padding:10px;">
                   <span>版本：</span>
-                  <a-button>抄读管理单元固件版本号</a-button>
+                  <a-button @click="quickMsg('7E7E7E5A0605DF7EA5')">抄读管理单元固件版本号</a-button>
                 </a-row>
                 <a-row class="top-5 home_text shadow-card" style="flex-direction:column;padding:10px;">
                   <span>版本：</span>
-                  <a-button>抄读蓝牙模块固件版本号</a-button>
+                  <a-button @click="quickMsg('7E7E7E5A0606E07EA5')">抄读蓝牙模块固件版本号</a-button>
                 </a-row>
               </a-row>
 
@@ -149,6 +152,7 @@
 <script setup>
 import { onBeforeMount, ref, getCurrentInstance, watch, nextTick } from 'vue';
 // import Header from '@/components/Header';
+import { formatMsg } from '@/utils'
 import serialport from 'serialport';
 import serialConfig from '@/config';
 // import robots from '@/assets/robots.png';
@@ -269,6 +273,13 @@ function strToHexCharCode(str) {
   }
   return hexCharCode;
 }
+
+// 快捷发送消息
+const quickMsg = (value, type = 'ss') => {
+  msg.value.push({ chat: type, content: value });
+  COM.write(new Uint8Array(strToHexCharCode(value)));
+}
+
 // 发送消息
 const handleSendMsg = () => {
   if (open.value) {
@@ -328,6 +339,7 @@ watch(
 	width: 100%;
 }
 .home-item {
+	width: 100%;
 	padding: 10px;
 	padding-top: 0px;
 	display: flex;
@@ -386,6 +398,7 @@ watch(
 	margin-bottom: 10px;
 }
 .home_right {
+	height: calc(100vh - 76px);
 	display: flex;
 	flex-direction: column;
 	flex: 1;
@@ -439,7 +452,7 @@ watch(
 	position: relative;
 	display: inline-block;
 	min-width: 38px;
-	min-height: 38px;
+	min-height: 34px;
 	margin-left: 10px;
 	word-break: break-word;
 	padding: 5px 8px;
@@ -450,19 +463,19 @@ watch(
 	max-width: 490px;
 	font-size: 14px;
 	letter-spacing: 0px;
-	color: black;
+	color: white;
 }
 .right_msg .msgContent {
 	position: relative;
 	display: inline-block;
 	min-width: 38px;
-	min-height: 38px;
+	min-height: 34px;
 	margin-right: 10px;
 	padding: 5px 8px;
 	border-radius: 5px;
-	background-color: #5a64c1;
+	background-color: #26bd4b;
 	max-width: 500px;
-	font-size: 18px;
+	font-size: 14px;
 	font-weight: normal;
 	color: #e9e9e9;
 }

@@ -14,6 +14,7 @@ import Side from '@/components/Side';
 <style scoped>
 .main {
 	height: 100vh;
+  overflow: hidden;
 	display: flex;
 	background-image: linear-gradient(135deg, #3c8ce7 10%, #00eaff 100%);
 	color: white !important;
