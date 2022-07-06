@@ -147,7 +147,7 @@ import serialport from 'serialport';
 import {serialConfig,baudRate,channelNum, pulseType, power, frequency, channelType, communicationMode} from '@/config';
 // import robots from '@/assets/robots.png';
 const comer = useComStore();
-let { COM } = comer;
+// let { COM } = comer;
 const currentInstance = getCurrentInstance();
 const { $message } = currentInstance.appContext.config.globalProperties;
 
@@ -187,7 +187,7 @@ const msg = ref([]);
 let sendMsg = '';
 
 onBeforeMount(()=>{
-  console.log(window.COM)
+  console.log(COM)
 })
 
 // onBeforeUnmount(() => {
