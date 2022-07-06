@@ -12,7 +12,7 @@
           </a-button>
         </div>
         <div>
-          <a-button class="full-btn" @click="quickMsg('7E7E7E5A0607E17EA5')">
+          <a-button class="full-btn" @click="quickMsg('7E7E7E5A0607E17EA5','蓝牙检定预处理')">
             <span>蓝牙检定预处理</span>
           </a-button>
         </div>
@@ -65,60 +65,61 @@
                 <a-row>
                   <a-row class="top-5">
                     <span class="little-span">脉冲类型：</span>
-                    <a-select class="m-selector" size="small" v-model:value="value" placeholder="脉冲类型" :options="options"></a-select>
+                    <a-select class="m-selector" size="small" v-model:value="testMode.pulseType" placeholder="脉冲类型" :options="pulseType"></a-select>
                   </a-row>
                   <a-row class="top-5">
                     <span class="little-span">发射功率：</span>
-                    <a-select class="m-selector" size="small" v-model:value="value" placeholder="发射功率" :options="options"></a-select>
+                    <a-select class="m-selector" size="small" v-model:value="testMode.power" placeholder="发射功率" :options="power"></a-select>
                   </a-row>
                   <a-row class="top-5">
                     <span class="little-span">频段选择：</span>
-                    <a-select class="m-selector" size="small" v-model:value="value" placeholder="频段选择" :options="options"></a-select>
+                    <a-select class="m-selector" size="small" v-model:value="testMode.frequency" placeholder="频段选择" :options="frequency"></a-select>
                   </a-row>
                   <a-row class="top-5">
                     <span class="little-span">通道生成方式：</span>
-                    <a-select class="m-selector" size="small" v-model:value="value" placeholder="通道生成方式" :options="options"></a-select>
+                    <a-select class="m-selector" size="small" v-model:value="testMode.channelType" placeholder="通道生成方式" :options="channelType"></a-select>
                   </a-row>
                   <a-row class="top-5">
                     <span class="little-span">通道数量：</span>
-                    <a-select class="m-selector" size="small" v-model:value="value" placeholder="通道数量" :options="options"></a-select>
+                    <a-select class="m-selector" size="small" v-model:value="testMode.channelNum" placeholder="通道数量" :options="channelNum"></a-select>
                   </a-row>
                 </a-row>
-                <a-row v-for="i in 5" :key="i">
+                <a-row v-for="i in testMode.channelNum" :key="i">
                   <div class="top-5">
-                    <a-input size="small" v-model:value="value" placeholder="频点" :prefix="'通道'+ i" />
+                    <a-input size="small" v-model:value="testMode.channelList[i]" placeholder="频点" :prefix="'通道'+ i" />
                   </div>
                 </a-row>
               </div>
             </a-col>
 
             <a-col :span="12">
+
               <a-row class="home_text shadow-card">
                 <div class="home-item">
                   <a-button>切换转换器检定模式</a-button>
                   <a-row>
                     <a-row class="top-5">
                       <span class="little-span">脉冲类型：</span>
-                      <a-select class="m-selector" size="small" v-model:value="value" placeholder="脉冲类型" :options="options"></a-select>
+                      <a-select class="m-selector" size="small" v-model:value="testMode2.pulseType" placeholder="脉冲类型" :options="pulseType"></a-select>
                     </a-row>
                     <a-row class="top-5">
                       <span class="little-span">发射功率：</span>
-                      <a-select class="m-selector" size="small" v-model:value="value" placeholder="发射功率" :options="options"></a-select>
+                      <a-select class="m-selector" size="small" v-model:value="testMode2.power" placeholder="发射功率" :options="power"></a-select>
                     </a-row>
                     <a-row class="top-5">
                       <span class="little-span">通信模式：</span>
-                      <a-select class="m-selector" size="small" v-model:value="value" placeholder="通信模式" :options="options"></a-select>
+                      <a-select class="m-selector" size="small" v-model:value="testMode2.channelType" placeholder="通信模式" :options="communicationMode"></a-select>
                     </a-row>
                   </a-row>
                 </div>
               </a-row>
+
               <a-row style="flex-direction:column;margin-right:10px;">
                 <a-row class="top-5 home_text shadow-card" style="padding:10px">
                   <span>设置转换器RS485波特率：</span>
-                  <a-select style="flex:1" size="small" :disabled="open" :defaultValue="1" @change="handleChangeStopBits">
-                    <a-select-option v-for="item in serialConfig.stopBits" :key="item" :value="item">{{ item }}bit</a-select-option>
+                  <a-select style="flex:1" size="small" :disabled="open" :defaultValue="3" @change="handleChangeStopBits">
+                    <a-select-option v-for="item in baudRate" :key="item.value" :value="item.value">{{ item.label }}</a-select-option>
                   </a-select>
-
                 </a-row>
                 <a-row class="top-5 home_text shadow-card" style="flex-direction:column;padding:10px;">
                   <span>版本：</span>
@@ -130,77 +131,54 @@
                 </a-row>
               </a-row>
 
-              <!-- <div>
-                ----------------
-                <span>切换转换器检定模式</span>
-                <a-select class="home_input" style="width: 120px" :disabled="open" :defaultValue="8" @change="handleChangeDataBits">
-                  <a-select-option v-for="item in serialConfig.dataBits" :key="item" :value="item">{{ item }}bit</a-select-option>
-                </a-select>
-              </div> -->
-
             </a-col>
-
           </a-row>
-
         </div>
-
       </div>
     </div>
-
   </div>
 </template>
 <script setup>
 import { onBeforeMount, ref, getCurrentInstance, watch, nextTick } from 'vue';
 // import Header from '@/components/Header';
 import { formatMsg } from '@/utils'
+import { useComStore } from '@/store';
 import serialport from 'serialport';
-import serialConfig from '@/config';
+import {serialConfig,baudRate,channelNum, pulseType, power, frequency, channelType, communicationMode} from '@/config';
 // import robots from '@/assets/robots.png';
+const comer = useComStore();
+let { COM } = comer;
 const currentInstance = getCurrentInstance();
 const { $message } = currentInstance.appContext.config.globalProperties;
 
-// 串口列表
-let ports = ref([]);
-// 串口号
-const port = ref('COM1');
-// 串口配置
-const option = {
-  baudRate: 9600, // 波特率
-  dataBits: 8, // 数据位
-  parity: 'none', // 校验位
-  stopBits: 1, // 停止位
-  flowControl: false
-};
-// 串口是否打开
-const open = ref(false);
-// 是否是十六进制显示
-let hexDisplay = false;
-// 是否是十六进制发送
-let hexSend = false;
-
-// 获取串口列表
-onBeforeMount(() => {
-  setInterval(() => {
-    serialport.list().then(list => {
-      ports.value = list;
-    });
-  }, 2000);
-});
-
-// const handleHexDisplay = e => {
-//   hexDisplay = e.target.checked;
-// };
-
-// const handleHexSend = e => {
-//   hexSend = e.target.checked;
-// };
-// // 修改串口
-// const handleChange = value => {
-//   port.value = value;
-// };
+// 待测表进检定模式
+const testMode=ref({
+  //脉冲类型
+  pulseType:null,
+  //发射功率
+  power:null,
+  //频段选择
+  frequency:null,
+  //通道生成方式
+  channelType:null,
+  //通道数量
+  channelNum:1,
+  channelList:[null,null,null,null,null],
+})
+// 转换器检定模式
+const testMode2=ref({
+  //脉冲类型
+  pulseType:null,
+  //发射功率
+  power:null,
+  //通信模式
+  channelType:null,
+  //通道数量
+  channelNum:1,
+})
 
 // 串口
-let COM = null;
+// let COM = null;
 
 // 消息
 const msg = ref([]);
@@ -208,53 +186,45 @@ const msg = ref([]);
 // 发送的信息
 let sendMsg = '';
 
-// 定时时间
-let time = ref(1000);
-let timer = ref(null);
-let isInterval = ref(false);
+onBeforeMount(()=>{
+  console.log(window.COM)
+})
 
-const openInterval = e => {
-  isInterval.value = e.target.checked;
-  timer.value && window.clearInterval(timer.value);
-  if (e.target.checked) {
-    timer.value = window.setInterval(() => {
-      handleSendMsg();
-    }, time.value);
-  }
-};
-const handleSetInterval = value => {
-  time.value = value;
-};
+// onBeforeUnmount(() => {
+// 	clearInterval(comTimer);
+// 	if (open.value && COM) COM.close(() => {});
+// });
+
 // 开关串口
 const handleSwitch = checked => {
-  if (checked) {
-    COM = new serialport(port.value, option, false);
-    COM.on('error', function () {
-      $message.error('端口已经被占用');
-      open.value = false;
-    });
-    // 接受消息
-    COM.on('readable', () => {
-      let content = '';
+	console.log(checked);
+	if (checked) {
+		COM = new serialport(port.value, option.value, false);
+		COM.on('error', function() {
+			$message.error('端口已经被占用');
+			open.value = false;
+		});
+		// 接受消息
+		COM.on('readable', () => {
+			let content = '';
+			if (hexDisplay) {
+				COM.read().map(item => {
+					content += item.toString(16);
+				});
+			} else {
+				content = COM.read().toString();
+			}
 
-      if (hexDisplay) {
-        COM.read().map(item => {
-          content += item.toString(16);
-        });
-      } else {
-        content = COM.read().toString();
-      }
-
-      if (content === '\n') {
-        return;
-      }
-      msg.value.push({ chat: 'roboto', content });
-    });
-    open.value = true;
-  } else {
-    open.value = false;
-    COM.close(() => { });
-  }
+			if (content === '\n') {
+				return;
+			}
+			msg.value.push({ chat: 'roboto', content });
+		});
+		open.value = true;
+	} else {
+		open.value = false;
+		if (COM) COM.close(() => {});
+	}
 };
 
 // 设置发送消息
@@ -298,26 +268,8 @@ const clearMsg = () => {
   msg.value = [];
 };
 
-// 修改波特率
-const handleChangeBaudRage = value => {
-  option.baudRate = value;
-};
-
-// 修改校验位
-const handleChangeParity = value => {
-  option.parity = value;
-};
-
-// 修改数据位
-const handleChangeDataBits = value => {
-  option.dataBits = value;
-};
-
-// 修改停止位
-const handleChangeStopBits = value => {
-  option.stopBits = value;
-};
 const scrollRef = ref(null);
+
 watch(
   () => [...msg.value],
   async () => {
@@ -325,6 +277,7 @@ watch(
     scrollRef.value.scrollTop = scrollRef.value.scrollHeight;
   }
 );
+
 </script>
 <style lang="scss" scoped>
 .m-selector {

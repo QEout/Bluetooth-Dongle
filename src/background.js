@@ -11,9 +11,9 @@ let win;
 async function createWindow() {
 	// Create the browser window.
 	win = new BrowserWindow({
-		width: 930,
+		width: 945,
 		height: 635,
-		minWidth: 930,
+		minWidth: 945,
 		minHeight: 635,
 		useContentSize: false,
 		frame: false,
@@ -109,9 +109,9 @@ ipcMain.on('window-max', function() {
 		win.maximize();
 	}
 });
-// if (isDevelopment) {
-//   try {
-//     require('electron-reloader')(module);
-//   } catch (err) {
-//   }
-// }
+if (isDevelopment) {
+  try {
+    require('electron-reloader')(module);
+  } catch (err) {
+  }
+}

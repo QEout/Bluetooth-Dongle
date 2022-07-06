@@ -89,10 +89,9 @@ import serialport from 'serialport';
 import { serialConfig } from '@/config';
 // import robots from '@/assets/robots.png';
 const currentInstance = getCurrentInstance();
-const { $message } = currentInstance.appContext.config.globalProperties;
+let { $message } = currentInstance.appContext.config.globalProperties;
 const comer = useComStore();
 let { open, value: port, option } = storeToRefs(comer);
-
 // 串口列表
 let ports = ref([]);
 // 是否是十六进制显示
@@ -113,7 +112,6 @@ onBeforeMount(() => {
 
 onBeforeUnmount(() => {
 	clearInterval(comTimer);
-	if (open.value && COM) COM.close(() => {});
 });
 
 const handleHexDisplay = e => {
@@ -129,7 +127,7 @@ const handleChange = value => {
 };
 
 // 串口
-let COM = null;
+let COM = window.COM;
 // 消息
 const msg = ref([]);
 // 发送的信息
@@ -160,11 +158,16 @@ const clearMsg = () => {
 const handleSwitch = checked => {
 	console.log(checked);
 	if (checked) {
-		COM = new serialport(port.value, option.value, false);
-		COM.on('error', function() {
-			$message.error('端口已经被占用');
-			open.value = false;
-		});
+		if (!COM) {
+			COM = new serialport(port.value, option.value, false);
+			window.COM = COM;
+			comer.setCom(COM);
+			COM.on('error', function() {
+				$message.error('端口已经被占用');
+				open.value = false;
+				window.COM = null;
+			});
+		}
 		// 接受消息
 		COM.on('readable', () => {
 			let content = '';
@@ -181,10 +184,12 @@ const handleSwitch = checked => {
 			}
 			msg.value.push({ chat: 'roboto', content });
 		});
-		open.value = true;
 	} else {
-		open.value = false;
-		if (COM) COM.close(() => {});
+		if (COM) {
+			COM.close(() => {});
+			COM = null;
+			window.COM = null;
+		}
 	}
 };
 
@@ -336,7 +341,7 @@ watch(
 	max-width: 490px;
 	font-size: 14px;
 	letter-spacing: 0px;
-	color: black;
+	color: white;
 }
 .right_msg .msgContent {
 	position: relative;
