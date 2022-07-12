@@ -8,13 +8,13 @@ import 'ant-design-vue/dist/antd.css';
 import '@/assets/font/iconfont.css';
 import './index.css';
 
-Bmob.initialize('0d92db2f8243e2bd', 'yszn11');
+Bmob.initialize('0d92db2f8243e2bd', 'yszn11','7926fce16ff9f7e89e0ae0c9dc410c09');
 
 const app = createApp(App);
 app.config.globalProperties.$message = message;
 // app.config.globalProperties.$com = null;
 //引入serveless
-app.config.globalProperties.Bmob = Bmob;
+// app.config.globalProperties.Bmob = Bmob;
 
 app.directive('focus', {
 	inserted: function(el) {
