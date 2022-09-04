@@ -1104,6 +1104,11 @@
   "resolved" "https://registry.npmjs.org/@serialport/parser-delimiter/-/parser-delimiter-9.0.7.tgz"
   "version" "9.0.7"
 
+"@serialport/parser-delimiter@9.2.4":
+  version "9.2.4"
+  resolved "https://registry.npmmirror.com/@serialport/parser-delimiter/-/parser-delimiter-9.2.4.tgz"
+  integrity sha512-4nvTAoYAgkxFiXrkI+3CA49Yd43CODjeszh89EK+I9c8wOZ+etZduRCzINYPiy26g7zO+GRAb9FoPCsY+sYcbQ==
+
 "@serialport/parser-inter-byte-timeout@9.0.7":
   "integrity" "sha512-lUZ3cwgUluBvJ1jf+0LQsqoiPYAokDO6+fRCw9HCfnrF/OS60Gm4rxuyo2uQIueqZkJ7NIFP+ibKsULrA47AEA=="
   "resolved" "https://registry.npmjs.org/@serialport/parser-inter-byte-timeout/-/parser-inter-byte-timeout-9.0.7.tgz"
@@ -1115,6 +1120,13 @@
   "version" "9.0.7"
   dependencies:
     "@serialport/parser-delimiter" "^9.0.7"
+
+"@serialport/parser-readline@9.2.4":
+  version "9.2.4"
+  resolved "https://registry.npmmirror.com/@serialport/parser-readline/-/parser-readline-9.2.4.tgz"
+  integrity sha512-Z1/qrZTQUVhNSJP1hd9YfDvq0o7d87rNwAjjRKbVpa7Qi51tG5BnKt43IV3NFMyBlVcRe0rnIb3tJu57E0SOwg==
+  dependencies:
+    "@serialport/parser-delimiter" "9.2.4"
 
 "@serialport/parser-ready@9.0.7":
   "integrity" "sha512-3qYhI4cNUPAYqVYvdwV57Y+PVRl4dJf1fPBtMoWtwDgwopsAXTR93WCs49WuUq9JCyNW+8Hrfqv8x8eNAD5Dqg=="

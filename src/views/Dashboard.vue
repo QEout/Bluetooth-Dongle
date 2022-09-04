@@ -70,7 +70,7 @@
 		</div>
 		<div class="home_b">
 			<!-- <div class="home_send"> -->
-				<a-textarea :rows="4" class="home_send_input" placeholder="请输入要发送的信息" @change="handleSendValue" allowClear  />
+			<a-textarea :rows="4" class="home_send_input" placeholder="请输入要发送的信息" @change="handleSendValue" allowClear />
 			<!-- </div> -->
 			<div class="home_sendConfig">
 				<div class="home_check" style="margin-bottom: 12px;display: flex;align-items: center;">
@@ -130,7 +130,7 @@ const handleHexSend = e => {
 	hexSend = e.target.checked;
 };
 // 串口
-let COM = window.COM;
+let com = window.COM;
 // 消息
 const msg = ref([]);
 // 发送的信息
@@ -288,7 +288,7 @@ watch(
 	height: 100% !important;
 }
 ::v-deep .home_send_input > textarea {
-  padding-right: 24px !important;
+	padding-right: 24px !important;
 }
 .home_text {
 	box-sizing: border-box;

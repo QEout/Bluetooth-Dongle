@@ -14,3 +14,12 @@ export function formatMsg(msg) {
   }
   return str;
 }
+
+// 十进制转HEX，如：10转成0A
+export function dec2hex(dec) {
+  let hex = Number(dec).toString(16).toUpperCase();
+  if (hex.length % 2) {
+    hex = '0' + hex;
+  }
+  return hex;
+}
