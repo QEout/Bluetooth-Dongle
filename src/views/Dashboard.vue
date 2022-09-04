@@ -36,14 +36,21 @@
 				</div>
 				<div>
 					<span>开/关</span>
-					<a-switch v-model:checked="open" />
+					<a-switch v-model:checked="open" @click="handleSwitch(open)" />
 				</div>
 
 				<div>
 					<a-divider>接收区设置</a-divider>
-					<div class="home_check">
-						<a-checkbox @change="handleHexDisplay">十六进制显示</a-checkbox>
+					<div class="home_check" style="display:flex">
+						<a-checkbox @change="handleHexDisplay">HEX显示</a-checkbox>
+						<div style="display: flex;flex:1">
+							<span>间隔：</span>
+							<a-input-number style="flex:1" size="small" :disabled="open" v-model:value="timeout" :min="1" :max="9999">
+								<template #addonAfter>ms</template>
+							</a-input-number>
+						</div>
 					</div>
+					<a-button type="primary" danger @click="clearMsg" style="width:100%">清空窗口</a-button>
 				</div>
 			</div>
 			<div class="home_right">
@@ -53,40 +60,40 @@
 							<a-avatar shape="square" :size="32">
 								R
 							</a-avatar>
-							<div class="msgContent">收→{{ item.content }}</div>
+							<div class="msgContent">{{ item.content }}</div>
 						</div>
-						<div v-else class="msgContent">{{ item.chat ?? '发' }}→{{ item.content }}</div>
+						<div v-else class="msgContent">{{ item.content }}</div>
 						<!-- {{ item.content }} -->
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="home_b">
+			<!-- <div class="home_send"> -->
+				<a-textarea :rows="4" class="home_send_input" placeholder="请输入要发送的信息" @change="handleSendValue" allowClear  />
+			<!-- </div> -->
 			<div class="home_sendConfig">
-				<div class="home_check" style="margin-bottom: 12px;">
-					<a-checkbox @change="handleHexSend">十六进制发送</a-checkbox>
+				<div class="home_check" style="margin-bottom: 12px;display: flex;align-items: center;">
+					<a-checkbox @change="handleHexSend">HEX发送</a-checkbox>
+					<a-button type="primary" style="flex:1" :disabled="!open" @click="handleSendMsg">发送</a-button>
 				</div>
-				<div class="home_check">
+				<div class="home_check" style="display: flex;align-items: center;">
 					<a-checkbox @change="openInterval">定时发送</a-checkbox>
-					<a-input-number :disabled="isInterval" v-model="time" :defaultValue="time" :min="1" :max="99999" @change="handleSetInterval" />
-				</div>
-			</div>
-			<div class="home_send">
-				<a-textarea class="home_send_input" placeholder="请输入要发送的信息" @change="handleSendValue" allowClear autoSize />
-				<div class="home_btn">
-					<a-button type="primary" class="size-btn" :disabled="!open" @click="handleSendMsg">发送</a-button>
-					<a-button type="primary" class="size-btn" danger @click="clearMsg">清空</a-button>
+					<a-input-number style="flex:1" :disabled="isInterval" v-model="time" :defaultValue="time" :min="1" :max="99999" @change="handleSetInterval">
+						<template #addonAfter>ms</template>
+					</a-input-number>
 				</div>
 			</div>
 		</div>
 	</div>
 </template>
 <script setup>
-import { onBeforeMount, ref, getCurrentInstance, watch, nextTick, computed, onBeforeUnmount } from 'vue';
+import { onBeforeMount, ref, getCurrentInstance, watch, nextTick, onBeforeUnmount } from 'vue';
 import { useComStore } from '@/store';
 import { storeToRefs } from 'pinia';
 import serialport from 'serialport';
 import { serialConfig } from '@/config';
+import InterByteTimeoutParser from '@serialport/parser-inter-byte-timeout';
 // import robots from '@/assets/robots.png';
 const currentInstance = getCurrentInstance();
 let { $message } = currentInstance.appContext.config.globalProperties;
@@ -94,6 +101,8 @@ const comer = useComStore();
 let { open, value: port, option } = storeToRefs(comer);
 // 串口列表
 let ports = ref([]);
+// 超时时间
+let timeout = ref(30);
 // 是否是十六进制显示
 let hexDisplay = false;
 // 是否是十六进制发送
@@ -103,7 +112,6 @@ let comTimer = null;
 // 获取串口列表
 onBeforeMount(() => {
 	comTimer = setInterval(() => {
-		console.log('tttt');
 		serialport.list().then(list => {
 			ports.value = list;
 		});
@@ -121,11 +129,6 @@ const handleHexDisplay = e => {
 const handleHexSend = e => {
 	hexSend = e.target.checked;
 };
-// 修改串口
-const handleChange = value => {
-	port.value = value;
-};
-
 // 串口
 let COM = window.COM;
 // 消息
@@ -156,27 +159,22 @@ const clearMsg = () => {
 };
 // 开关串口
 const handleSwitch = checked => {
-	console.log(checked);
 	if (checked) {
-		if (!COM) {
-			COM = new serialport(port.value, option.value, false);
-			window.COM = COM;
-			comer.setCom(COM);
-			COM.on('error', function() {
-				$message.error('端口已经被占用');
-				open.value = false;
-				window.COM = null;
-			});
-		}
+		COM = new serialport(port.value, option.value, false);
+
+		const pipe = COM.pipe(new InterByteTimeoutParser({ interval: 30 }));
+		window.COM = COM;
+
+		comer.setCom(COM);
 		// 接受消息
-		COM.on('readable', () => {
+		pipe.on('readable', () => {
 			let content = '';
 			if (hexDisplay) {
-				COM.read().map(item => {
+				pipe.read().map(item => {
 					content += item.toString(16);
 				});
 			} else {
-				content = COM.read().toString();
+				content = pipe.read()?.toString();
 			}
 
 			if (content === '\n') {
@@ -186,7 +184,7 @@ const handleSwitch = checked => {
 		});
 	} else {
 		if (COM) {
-			COM.close(() => {});
+			COM?.close(() => {});
 			COM = null;
 			window.COM = null;
 		}
@@ -197,25 +195,23 @@ const handleSwitch = checked => {
 const handleSendValue = e => {
 	sendMsg = e.currentTarget.value;
 };
-function strToHexCharCode(str) {
-	if (str === '') return '';
-	var hexCharCode = [];
-	for (var i = 0; i < str.length; i += 2) {
-		if (i + 1 < str.length) {
-			hexCharCode.push(parseInt(`${str[i]}${str[i]}`, 16));
-		} else {
-			hexCharCode.push(parseInt(str[i], 16));
-		}
+
+// hex发送
+function hexSendMsg(msg) {
+	let hex = msg.replace(/\s+/g, '');
+	let arr = [];
+	for (let i = 0; i < hex.length; i += 2) {
+		arr.push(parseInt(hex.substr(i, 2), 16));
 	}
-	return hexCharCode;
+	return arr;
 }
+
 // 发送消息
 const handleSendMsg = () => {
 	if (open.value) {
 		msg.value.push({ chat: 'me', content: sendMsg });
-		// COM.write(sendMsg);
 		if (hexSend) {
-			COM.write(new Uint8Array(strToHexCharCode(sendMsg)));
+			COM.write(hexSendMsg(sendMsg));
 		} else {
 			COM.write(sendMsg);
 		}
@@ -229,11 +225,6 @@ watch(
 		await nextTick();
 		scrollRef.value.scrollTop = scrollRef.value.scrollHeight;
 	}
-);
-watch(
-	() => open.value,
-	() => handleSwitch(open.value),
-	{ immediate: true }
 );
 </script>
 <style scoped>
@@ -287,15 +278,17 @@ watch(
 	border: 1px solid #ededed;
 }
 .home_send {
-	height: calc(16vh + 4px);
+	height: calc(16vh + 6px);
 	flex: 1;
 	display: flex;
-	margin-left: 10px;
 	overflow: scroll;
 }
 .home_send_input {
 	margin-right: 10px !important;
-	height: 100%;
+	height: 100% !important;
+}
+::v-deep .home_send_input > textarea {
+  padding-right: 24px !important;
 }
 .home_text {
 	box-sizing: border-box;
@@ -375,6 +368,7 @@ watch(
 .home_sendConfig {
 	width: 240px;
 	padding: 10px;
+	height: calc(16vh + 2px);
 	border: 1px solid #ededed;
 	user-select: none;
 }

@@ -1,20 +1,23 @@
 .ant-divider-inner-text {
-  color: #fff;
+	color: #fff;
 }
 
 .ant-checkbox-wrapper {
-  color: #fff;
+	color: #fff;
 }
 
 .ant-checkbox-checked .ant-checkbox-inner {
-  background-color: #52c41a;
-  border-color: #aaa !important;
+	background-color: #52c41a;
+	border-color: #aaa !important;
 }
 
 .ant-switch-checked {
-  background-color: #52c41a;
+	background-color: #52c41a;
 }
 
 .shadow-card {
-  box-shadow: 0 2px 2px 0 rgb(0 0 0 / 25%)
+	box-shadow: 0 2px 2px 0 rgb(0 0 0 / 25%);
+}
+.ant-input-number-group-addon {
+	padding: 0 6px;
 }
